@@ -1,0 +1,31 @@
+CREATE DATABASE IF NOT EXISTS study_planner CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE study_planner;
+CREATE TABLE IF NOT EXISTS users (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS subjects (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ user_id INT NOT NULL,
+ name VARCHAR(100) NOT NULL,
+ color VARCHAR(20) DEFAULT '#4776e6',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS tasks (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ user_id INT NOT NULL,
+ subject_id INT NULL,
+ title VARCHAR(180) NOT NULL,
+ task_type ENUM('Study','Assignment','Exam','Revision') DEFAULT 'Study',
+ due_date DATE NOT NULL,
+ start_time TIME NULL,
+ priority ENUM('Low','Medium','High') DEFAULT 'Medium',
+ status ENUM('Pending','Completed') DEFAULT 'Pending',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+ FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL
+);
